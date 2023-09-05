@@ -27,6 +27,7 @@ interface Props {
     });
 
     const onSubmit =  async (values: z.infer<typeof ThreadValidation>) => {
+        // Backend Action
         await createThread({
             text: values.thread,
             author: userId,
