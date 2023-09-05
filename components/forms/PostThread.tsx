@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {z} from "zod";
 import {useForm} from "react-hook-form";
@@ -8,33 +8,33 @@ import {Textarea} from "@/components/ui/textarea";
 import {zodResolver} from "@hookform/resolvers/zod";
 import { usePathname, useRouter } from "next/navigation";
 import {ThreadValidation} from "@/lib/validations/threads";
+import {createThread} from "@/lib/actions/thread.actions";
 
 interface Props {
-    user: {
-        id: string;
-        objectId: string;
-        username: string;
-        name: string;
-        bio: string;
-        image: string;
-    };
-    btnTitle: string;
-}
-
-function PostThread({ userId }: { userId: string }) {
+    userId: string;
+  }
+  
+  function PostThread({ userId }: Props) {
     const router = useRouter();
     const pathname = usePathname();
 
-    const form = useForm({
+    const form = useForm<z.infer<typeof ThreadValidation>>({ 
         resolver: zodResolver(ThreadValidation),
         defaultValues: {
             thread: "",
             accountId: userId,
-        }
-    })
+        },
+    });
 
-    const onSubmit = () => {
+    const onSubmit =  async (values: z.infer<typeof ThreadValidation>) => {
+        await createThread({
+            text: values.thread,
+            author: userId,
+            communityId: null,
+            path: pathname,
+        });
 
+        router.push("/")
     }
 
     return (
@@ -52,15 +52,13 @@ function PostThread({ userId }: { userId: string }) {
                                 Content
                             </FormLabel>
                             <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
-                                <Textarea
-                                    rows={15}
-                                    {...field}
-                                />
+                                <Textarea rows={15} {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
+
                 <Button type="submit" className="bg-primary-500">
                     Post Thread
                 </Button>
