@@ -60,3 +60,9 @@ export async function fetchThreads( pageNumber = 1, pageSize = 20) {
 
     return { posts, isNext };
 }
+
+export async function fetchThreadById(id: string) {
+    connectToDB();
+
+    const thread = await Thread.findById(id)
+}
