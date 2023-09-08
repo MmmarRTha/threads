@@ -9,6 +9,7 @@ import {usePathname, useRouter} from "next/navigation";
 import {useForm} from "react-hook-form";
 import {Input} from "@/components/ui/input";
 import Image from "next/image";
+import {addCommentToThread} from "@/lib/actions/thread.actions";
 
 interface Props {
     threadId: string;
@@ -29,14 +30,9 @@ const Comment = ({threadId, currentUserImg, currentUserId}: Props) => {
 
 const onSubmit =  async (values: z.infer<typeof CommentValidation>) => {
     // Backend Action
-    // await createThread({
-    //     text: values.thread,
-    //     author: userId,
-    //     communityId: null,
-    //     path: pathname,
-    // });
+    await addCommentToThread(threadId, values.thread, JSON.parse(currentUserId), pathname);
 
-    router.push("/")
+   form.reset();
 }
 
     return (
